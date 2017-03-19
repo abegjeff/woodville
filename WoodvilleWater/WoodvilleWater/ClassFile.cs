@@ -52,12 +52,15 @@ namespace WoodvilleWater
             string ConnStr =
             ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             Conn = new SqlConnection(ConnStr);
+            //Conn.Open();
             return Conn;
         }
 
         public void Modify_Data(string sql)
         {
-            SqlCommand cmd = new SqlCommand(sql, CreateConnection());
+            SqlCommand cmd = new SqlCommand(sql);
+            cmd.Connection = CreateConnection();
+            cmd.Connection.Open();
             cmd.CommandType = CommandType.Text;
             cmd.ExecuteNonQuery();
         }

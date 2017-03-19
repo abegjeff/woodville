@@ -4,6 +4,22 @@
     <table>
         <td>
     <table width="80%">
+        <tr><td width="5%">Select an ID:</td>
+            <td><asp:DropDownList ID="DDLID" runat="server" AutoPostBack="True" OnSelectedIndexChanged="DDLID_SelectedIndexChanged"></asp:DropDownList>
+                <asp:Label ID="pickID" runat="server" Visible="false" Text="Label"></asp:Label>
+            </td>
+            <td>
+                <asp:Button ID="btnActive" runat="server" Text="All Accounts" OnClick="btnActive_Click" />
+            </td>
+            <td>
+                <asp:Button ID="btnPrevious" runat="server" Text="Previous" OnClick="btnPrevious_Click" />
+            </td>
+            <td>
+                <asp:Button ID="btnNext" runat="server" Text="Next" OnClick="btnNext_Click" />
+            </td>
+
+        </tr>
+        
         <tr><td width="5%">Account ID:</td>
             <td width="5%"><asp:Label ID="lblAccount" runat="server"></asp:Label></td>
         </tr>
@@ -50,10 +66,10 @@
     <tr><td><strong>Assessments</strong></td></tr>
     <tr><td colspan="2"><asp:GridView ID="GVAssess" runat="server" AutoGenerateColumns="False">
                  <Columns>
-        <asp:BoundField HeaderText="Date" DataField="DateOfAssessment"></asp:BoundField>
+        <asp:BoundField HeaderText="Date" DataField="DAssessment"></asp:BoundField>
         <asp:BoundField HeaderText="Price of Share" DataField="PriceOfShare"></asp:BoundField> 
         <asp:BoundField HeaderText="Assessment Fee" DataField="AssessmentFee"></asp:BoundField>
-        <asp:BoundField HeaderText="Due Date" DataField="DueDate"></asp:BoundField>
+        <asp:BoundField HeaderText="Due Date" DataField="DDate"></asp:BoundField>
         <asp:BoundField HeaderText="Amount Due" DataField="AmountDue"></asp:BoundField>
         <asp:BoundField HeaderText="Note" DataField="Note"></asp:BoundField>           
     </Columns>
@@ -61,14 +77,14 @@
         <tr><td><strong>Payments</strong></td><td><strong>Penalities</strong></td></tr>
         <tr><td><asp:GridView ID="GVPayments" runat="server" AutoGenerateColumns="False">
                  <Columns>
-        <asp:BoundField HeaderText="Date" DataField="DatePaid"></asp:BoundField>
+        <asp:BoundField HeaderText="Date" DataField="DPaid"></asp:BoundField>
         <asp:BoundField HeaderText="Amount Paid" DataField="AmountPaid"></asp:BoundField> 
         <asp:BoundField HeaderText="Note" DataField="Note"></asp:BoundField>           
     </Columns>
     </asp:GridView></td>
             <td><asp:GridView ID="GVPen" runat="server" AutoGenerateColumns="False">
                  <Columns>
-        <asp:BoundField HeaderText="Date" DataField="PenaltyDate"></asp:BoundField>
+        <asp:BoundField HeaderText="Date" DataField="PDate"></asp:BoundField>
         <asp:BoundField HeaderText="Fee" DataField="PenaltyFee"></asp:BoundField>
         <asp:BoundField HeaderText="Interest" DataField="PenaltyInterest"></asp:BoundField>             
         <asp:BoundField HeaderText="Note" DataField="Note"></asp:BoundField>           

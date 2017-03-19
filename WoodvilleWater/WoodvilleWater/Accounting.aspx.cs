@@ -14,16 +14,90 @@ namespace WoodvilleWater
         {
             if(!IsPostBack)
             {
+                Session["RowNo"] = "";
+                pickID.Text = "No";
                 FillData();
-                
+                FillList();
             }
         }
+
+        private void FillList()
+        {
+            string mdata = "select ID from accounts order by ID";
+            ClassFile cf = new ClassFile();
+            DataTable dt = cf.GetData(mdata);
+            DDLID.DataSource = dt;
+            DDLID.DataTextField = "ID";
+            DDLID.DataValueField = "ID";
+            DDLID.DataBind();
+
+            DDLID.Items.Insert(0, new ListItem("<Select ID>", "0"));
+        }
+
         private void FillData()
         {
             string mdata = "select * from accounts order by LastName";
+
             ClassFile cf = new ClassFile();
             DataTable dt = cf.GetData(mdata);
-            DataRow dr = dt.Rows[0];
+
+            if (dt.Rows.Count > 0)
+            {
+                if (dt.Rows.Count > 1)
+                {
+                    btnNext.Visible = true;
+
+                    btnPrevious.Visible = true;
+                }
+
+                else
+                {
+                    btnNext.Visible = false;
+
+                    btnPrevious.Visible = false;
+                }
+
+                if (Session["RowNo"].ToString() == "" || int.Parse(Session["RowNo"].ToString()) > dt.Rows.Count)
+                {
+                    Session["RowNo"] = "0";
+                }
+
+                if (dt.Rows.Count == int.Parse(Session["RowNo"].ToString()))
+                {
+
+                    Session["RowNo"] = "0";
+
+                }
+
+                if (Session["RowNo"].ToString() == "-1")
+                {
+
+                    Session["RowNo"] = (dt.Rows.Count - 1).ToString();
+
+                }
+            }
+
+
+            DataRow dr = dt.Rows[int.Parse(Session["RowNo"].ToString())];
+
+            
+            if (pickID.Text == "Yes")
+            {
+                mdata = "select * from accounts WHERE ID="+DDLID.SelectedValue+" order by LastName";
+            }
+            
+            if (pickID.Text == "Active")
+            {
+                mdata = "SELECT Certificates.IsActive, Accounts.*";
+                mdata += " FROM Certificates INNER JOIN Accounts ON Certificates.id = Accounts.id WHERE Certificates.IsActive=1";
+            }
+
+            else if (pickID.Text == "Inactive")
+            {
+                mdata = "SELECT Certificates.IsActive, Accounts.*";
+                mdata += " FROM Certificates INNER JOIN Accounts ON Certificates.id = Accounts.id WHERE Certificates.IsActive=0";
+            }
+
             lblAccount.Text = dr["ID"].ToString();
             txtFname.Text = dr["FirstName"].ToString();
             txtLname.Text = dr["LastName"].ToString();
@@ -39,18 +113,18 @@ namespace WoodvilleWater
             GVCert.DataSource = dt;
             GVCert.DataBind();
 
-            mdata = "select * from LedgerEntries where AccountID=" + lblAccount.Text;
+            mdata = "select *, CONVERT(VARCHAR(10), DUEDATE, 101) AS DDATE, CONVERT(VARCHAR(10), DATEOFASSESSMENT, 101) AS DASSESSMENT from LedgerEntries where AccountID=" + lblAccount.Text;
             dt = cf.GetData(mdata);
             string x = dt.Rows.Count.ToString();
             GVAssess.DataSource = dt;
             GVAssess.DataBind();
 
-            mdata = "select * from Payments where AccountID=" + lblAccount.Text;
+            mdata = "select *, CONVERT(VARCHAR(10), DATEPAID, 101) AS DPAID from Payments where AccountID=" + lblAccount.Text;
             dt = cf.GetData(mdata);
             GVPayments.DataSource = dt;
             GVPayments.DataBind();
 
-            mdata = "select * from Penalties where AccountID=" + lblAccount.Text;
+            mdata = "select *, CONVERT(VARCHAR(10), PENALTYDATE, 101) AS PDATE from Penalties where AccountID=" + lblAccount.Text;
             dt = cf.GetData(mdata);
             GVPen.DataSource = dt;
             GVPen.DataBind();
@@ -72,6 +146,60 @@ namespace WoodvilleWater
         protected void BtnExit_Click(object sender, EventArgs e)
         {
             Response.Redirect("MainMenu.aspx");
+        }
+
+        protected void DDLID_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (DDLID.SelectedValue == "0")
+            {
+                pickID.Text = "No";
+            }
+            else
+            {
+                pickID.Text = "Yes";
+            }
+            FillData(); 
+        }
+
+        protected void btnActive_Click(object sender, EventArgs e)
+        {
+            if (btnActive.Text == "All Accounts")
+            {
+                pickID.Text = "Active";
+                btnActive.Text = "Active Only";
+            }
+            else if (btnActive.Text == "Active Only")
+            {
+                btnActive.Text = "Inactive Only";
+                pickID.Text = "Inactive";
+            }
+            else
+            {
+                btnActive.Text = "All Accounts";
+                pickID.Text = "All";
+            }
+            FillData();
+            FillList();
+        }
+
+        protected void btnNext_Click(object sender, EventArgs e)
+        {
+            Session["RowNo"] = (int.Parse(Session["RowNo"].ToString()) + 1).ToString();
+            FillData();
+        }
+
+        protected void btnPrevious_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Session["RowNo"] = (int.Parse(Session["RowNo"].ToString()) - 1).ToString();
+            }
+
+            catch
+            {
+                Session["RowNo"] = "0";
+            }
+            FillData();
         }
     }
 }

@@ -13,6 +13,24 @@ namespace WoodvilleWater {
     public partial class DefaultFee {
         
         /// <summary>
+        /// DDLFees control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList DDLFees;
+        
+        /// <summary>
+        /// BtnExit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button BtnExit;
+        
+        /// <summary>
         /// txtName control.
         /// </summary>
         /// <remarks>
@@ -47,14 +65,5 @@ namespace WoodvilleWater {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button BtnSave;
-        
-        /// <summary>
-        /// BtnExit control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button BtnExit;
     }
 }

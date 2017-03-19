@@ -17,6 +17,8 @@ namespace WoodvilleWater
             if (!IsPostBack)
             {
                 filldata();
+                fillList();
+                BtnSave.Text = "Add/Save";
             }
         }
 
@@ -38,6 +40,20 @@ namespace WoodvilleWater
             catch { }
         }
 
+        private void fillList()
+        {
+            string mdata = "select ID, DefaultKey from Defaults order by DefaultKey";
+            ClassFile cf = new ClassFile();
+            DataTable dt = cf.GetData(mdata);
+            string x = dt.Rows.Count.ToString();
+            DDLFees.DataSource = dt;
+            DDLFees.DataTextField = "DefaultKey";
+            DDLFees.DataValueField = "ID";
+            DDLFees.DataBind();
+
+            DDLFees.Items.Insert(0, new ListItem("<Select Name>", "0"));
+        }
+
         private SqlConnection Conn;
         private void CreateConnection()
         {
@@ -48,8 +64,46 @@ namespace WoodvilleWater
 
         protected void BtnSave_Click(object sender, EventArgs e)
         {
-            string SqlString = "update defaults set DefaultFee='"+txtFee.Text +",Defaultkey='"+txtName.Text+"',SharePrice="+txtSharePrice.Text;
-            SqlDataAdapter sda = new SqlDataAdapter(SqlString, Conn);
+            string mdata = "";
+            ClassFile cf = new ClassFile();
+
+            mdata = "SELECT MAX(id) AS maxID FROM Defaults";
+            DataTable dt = cf.GetData(mdata);
+            DataRow dr = dt.Rows[0];
+
+            int newID = int.Parse(dr["maxID"].ToString()) + 1;
+
+            if (BtnSave.Text == "Add/Save")
+            {
+                mdata = "INSERT into defaults(id, DefaultKey, DefaultValue, SharePrice) values(" + newID + "," + txtName.Text + "," + double.Parse(txtFee.Text) + "," + float.Parse(txtSharePrice.Text) + ")";
+                cf.Modify_Data(mdata);
+            }
+            else
+            {
+                string SqlString = "update defaults set DefaultFee='" + txtFee.Text + ",Defaultkey='" + txtName.Text + "',SharePrice=" + txtSharePrice.Text;
+                SqlDataAdapter sda = new SqlDataAdapter(SqlString, Conn);
+            }
+            
+        }
+
+        private void clearData()
+        {
+            txtName.Text = "";
+            txtFee.Text = "";
+            txtSharePrice.Text = "";
+        }
+
+        protected void DDLFees_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (DDLFees.SelectedIndex.ToString() == "0")
+            {
+                clearData();
+                BtnSave.Text = "Add/Save";
+            }
+            else
+            {
+                BtnSave.Text = "Edit/Update";
+            }
         }
     }
 }
